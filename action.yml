@@ -1,29 +1,33 @@
-name: 'Issue comment parser'
-description: 'Parse YAML or JSON from a specific issue comment'
+name: "Issue comment parser"
+description: "Parse YAML or JSON from a specific issue comment"
 inputs:
   github_token:
-    description: 'The Github token to use for getting the issue comment via the API'
+    description: "The Github token to use for getting the issue comment via the API"
     required: true
 
   comment_id:
-    description: 'The id of the comment to be retreived and parsed'
+    description: "The id of the comment to be retreived and parsed"
     required: true
 
   format:
-    description: 'The format of the blob we expect to be parsing from the comment'
+    description: "The format of the blob we expect to be parsing from the comment"
     required: true
-    default: 'json'
+    default: "json"
 
   marker:
-    description: 'The optional marker for the YAML or JSON blob to parse, in case the comment contains multiple'
+    description: "The optional marker for the YAML or JSON blob to parse, in case the comment contains multiple"
     required: true
-    default: ''
+    default: ""
 
+  fail_on_missing:
+    description: If true, the action will fail if the payload is not found in the Comment body
+    required: false
+    default: "true"
 
 outputs:
   content:
-    description: 'The parsed content from the comment body as a string'
+    description: "The parsed content from the comment body as a string"
 
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"

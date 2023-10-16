@@ -6,7 +6,8 @@ let octokit = null;
 
 async function run() {
     const commentId = core.getInput('comment_id', {required: true});
-    const parserFormat = core.getInput('format', {required: true});
+    const parserFormat = core.getInput('format', { required: true });
+    const failOnMissing = core.getBooleanInput('fail_on_missing');
     try {
         const commentBody = await getCommentBody(commentId);
         const result = parseBody(commentBody);
@@ -14,7 +15,14 @@ async function run() {
         if (result != null) {
             core.setOutput('content', result);
         } else {
-            core.setFailed(`The comment with id ${commentId} did not contain a valid ${parserFormat} payload.`)
+            if (!failOnMissing) {
+                core.warning(`The comment with id ${commentId} did not contain a valid ${parserFormat} payload.`);
+                core.setOutput('payload', "NOT_FOUND");
+            } else {
+                core.warning(`failOnMissing: ${failOnMissing}.`);
+                core.setFailed(`The comment with id ${commentId} did not contain a valid ${parserFormat} payload.`);
+            }
+            
         }
     } catch (err) {
         core.setFailed(err);
