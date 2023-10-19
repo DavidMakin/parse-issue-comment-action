@@ -21,6 +21,10 @@ is for this action to be triggered by a Github issue comment in order to parse a
 
 **Required** The optional marker for the YAML or JSON payload to parse, in case the comment contains multiple. Defaults to "".
 
+## `fail_on_missing`
+
+If true, the action will fail if the payload is not found in the Comment body
+
 ## Outputs
 
 ## `content`
@@ -50,3 +54,26 @@ jobs:
       - name: Use the output as JSON
         run: echo ${{ fromJson(steps.parse.outputs.content).some_key }}
 ```
+
+### Fail on missing payload
+By default the action will fail if the payload is not found in the issue. This behavior can be changed by setting the `fail_on_missing` option to `false`.
+
+```yaml
+name: Parse comment
+uses: jkakavas/parse-issue-comment-action@v0.1
+id: parse
+with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    comment_id: ${{ github.event.comment.id }}
+    fail_on_missing: false
+```
+
+In this case, when the payload is not found in the issue, the payload value will be set to `NOT_FOUND`. You may want to skip other actions in your workflow if this is the case by using an `if` conditional as follows:
+```yaml
+name: Run something that uses the payload
+    if : steps.parse.outputs.payload != 'NOT_FOUND'
+    id: run_something
+    env:
+        SOME_KEY: ${{ fromJson(steps.parse.outputs.payload).some_key }}
+    run: |
+    echo $SOME_KEY
