@@ -41238,11 +41238,9 @@ async function run() {
                 core.setOutput('payload', "NOT_FOUND");
             } else {
                 core.warning(`failOnMissing: ${failOnMissing}.`);
-              core.setFailed(`The comment with id ${commentId} did not contain a valid ${parserFormat} payload.`);
-              
-              core.setOutput('payload', "NOT_FOUND");
-            }
-            
+                core.setFailed(`The comment with id ${commentId} did not contain a valid ${parserFormat} payload.`);              
+                core.setOutput('payload', "NOT_FOUND");
+            }            
         }
     } catch (err) {
         core.setFailed(err);
